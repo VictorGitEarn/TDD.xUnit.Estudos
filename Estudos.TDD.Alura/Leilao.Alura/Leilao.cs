@@ -7,6 +7,7 @@ namespace Leilao.Alura
 {
     public enum EstadoLeilao
     {
+        LeilaoAntesDoPregao,
         LeilaoEmAndamento,
         LeilaoFinalizado
     }
@@ -23,7 +24,7 @@ namespace Leilao.Alura
         {
             Peca = peca;
             _lances = new List<Lance>();
-            Estado = EstadoLeilao.LeilaoEmAndamento;
+            Estado = EstadoLeilao.LeilaoAntesDoPregao;
         }
 
         public void RecebeLance(Interessada cliente, double valor)
@@ -34,7 +35,7 @@ namespace Leilao.Alura
 
         public void IniciaPregao()
         {
-
+            Estado = EstadoLeilao.LeilaoEmAndamento;
         }
 
         public void TerminaPregao()
