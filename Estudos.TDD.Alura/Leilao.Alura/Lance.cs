@@ -11,6 +11,8 @@ namespace Leilao.Alura
 
         public Lance(Interessada cliente, double valor)
         {
+            if (valor < 0)
+                throw new ArgumentException("Lance não pode ser negativo, lance deve ser igual ou maior que 0");
             Cliente = cliente;
             Valor = valor;
         }
