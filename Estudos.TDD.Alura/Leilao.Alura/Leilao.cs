@@ -15,6 +15,7 @@ namespace Leilao.Alura
     public class Leilao
     {
         private IList<Lance> _lances;
+        private Interessada _ultimoCliente = null;
         public IEnumerable<Lance> Lances => _lances;
         public string Peca { get; }
         public Lance Ganhador { get; private set; }
@@ -27,10 +28,19 @@ namespace Leilao.Alura
             Estado = EstadoLeilao.LeilaoAntesDoPregao;
         }
 
+        private bool NovoLanceAceito(Interessada cliente, double valor)
+        {
+            return (Estado == EstadoLeilao.LeilaoEmAndamento)
+                && (cliente != _ultimoCliente);
+        }
+
         public void RecebeLance(Interessada cliente, double valor)
         {
-            if (Estado == EstadoLeilao.LeilaoEmAndamento)
+            if (NovoLanceAceito(cliente, valor))
+            {
                 _lances.Add(new Lance(cliente, valor));
+                _ultimoCliente = cliente;
+            }
         }
 
         public void IniciaPregao()
@@ -40,6 +50,9 @@ namespace Leilao.Alura
 
         public void TerminaPregao()
         {
+            if (Estado != EstadoLeilao.LeilaoEmAndamento)
+                throw new InvalidOperationException("Não é possível terminar pregão sem iniciar o mesmo, favor iniciar o pregão pelo método IniciaPregao().");
+
             Ganhador = Lances
                 .DefaultIfEmpty(new Lance(null, 0))
                 .OrderBy(x => x.Valor)

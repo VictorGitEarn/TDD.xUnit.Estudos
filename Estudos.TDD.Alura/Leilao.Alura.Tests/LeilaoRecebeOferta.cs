@@ -14,11 +14,18 @@ namespace Leilao.Alura.Tests
             //Arranje - cenário de entrada
             var leilao = new Leilao("Van Gogh");
             var fulano = new Interessada("Fulano", leilao);
+            var maria = new Interessada("Maria", leilao);
 
             leilao.IniciaPregao();
 
-            foreach (var valor in ofertas)
-                leilao.RecebeLance(fulano, valor);
+            for (int i = 0; i < ofertas.Length; i++)
+            {
+                var valor = ofertas[i];
+                if ((i % 2) == 0)
+                    leilao.RecebeLance(fulano, valor);
+                else
+                    leilao.RecebeLance(maria, valor);
+            }
 
             leilao.TerminaPregao();
 
@@ -26,6 +33,27 @@ namespace Leilao.Alura.Tests
             leilao.RecebeLance(fulano, 1000);
 
             //Assert
+            var qtdeObtida = leilao.Lances.Count();
+
+            Assert.Equal(qtdEsperada, qtdeObtida);
+        }
+
+        [Fact]
+        public void NaoAceitaProximoLanceDadoMesmoClienteRealizouUltimoLance()
+        {
+            //Arranje - cenário de entrada
+            var leilao = new Leilao("Van Gogh");
+            var fulano = new Interessada("Fulano", leilao);
+
+            leilao.IniciaPregao();
+
+            leilao.RecebeLance(fulano, 1000);
+            
+            //Act - Método sob teste
+            leilao.RecebeLance(fulano, 2000);
+
+            //Assert
+            var qtdEsperada = 1;
             var qtdeObtida = leilao.Lances.Count();
 
             Assert.Equal(qtdEsperada, qtdeObtida);
